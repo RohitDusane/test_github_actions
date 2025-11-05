@@ -1,0 +1,52 @@
+name: MLOPS- CI/CD Pipeline Using Github Actions
+
+# Trigger the workflow
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Testing model and running pipeline
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # 2. Setup Python environment
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      # 3. Install dependencies
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4. Run tests
+      - name: Run tests
+        run: |
+          pytest model_test.py --maxfail=1 --disable-warnings -q
+
+      # 5. Save the model
+      - name: Save Trained Model
+        run: |
+          # Train and save the model
+          python -c "from model.model import main; model = main()"
+          python -c "import joblib; joblib.dump(model, 'iris_model.pkl')"
+        if: success()
+
+      # 6. Upload model as artifact
+      - name: Upload Model Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: iris-model
+          path: iris_model.pkl
