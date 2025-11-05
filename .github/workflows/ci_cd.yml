@@ -1,7 +1,8 @@
-name: MLOPS- CI/CD Pipeline Using Github Actions
+name: MLOPS- CI/CD Pipeline Using GitHub Actions
 
-# Trigger the workflow
+# Trigger the workflow on push to main or pull requests to main
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -10,7 +11,7 @@ on:
       - main
 
 jobs:
-  # Testing model and running pipeline
+  # Testing model and running the pipeline
   test:
     runs-on: ubuntu-latest
 
@@ -36,17 +37,17 @@ jobs:
         run: |
           pytest model_test.py --maxfail=1 --disable-warnings -q
 
-      # 5. Save the model
+      # 5. Save the trained model
       - name: Save Trained Model
         run: |
-          # Train and save the model
-          python -c "from model.model import main; model = main()"
-          python -c "import joblib; joblib.dump(model, 'iris_model.pkl')"
+          # Train the model and save it as a .pkl file
+          python -c "
+          from model.model import main;
+          model = main(); 
+          import joblib;
+          joblib.dump(model, 'iris_model.pkl')"
         if: success()
 
-      # 6. Upload model as artifact
+      # 6. Upload model as an artifact
       - name: Upload Model Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: iris-model
-          path: iris_model.pkl
+        uses: actions/upl
