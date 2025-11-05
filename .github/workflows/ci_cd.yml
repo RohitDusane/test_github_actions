@@ -35,7 +35,7 @@ jobs:
       # 4. Run tests
       - name: Run tests
         run: |
-          pytest model_test.py --maxfail=1 --disable-warnings -q
+          pytest test/model_test.py --maxfail=1 --disable-warnings -q
 
       # 5. Save the trained model
       - name: Save Trained Model
