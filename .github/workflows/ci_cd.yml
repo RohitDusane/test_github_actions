@@ -50,4 +50,8 @@ jobs:
 
       # 6. Upload model as an artifact
       - name: Upload Model Artifact
-        uses: actions/upl
+        uses: actions/upload-artifact@v3
+        with:
+          name: iris-model
+          path: iris_model.pkl
+
